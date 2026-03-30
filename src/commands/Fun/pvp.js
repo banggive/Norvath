@@ -2,7 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("pvp")
+    .setName("pvpauto")
     .setDescription("Auto format PvP log (rapi)")
 
     .addStringOption(o => o.setName('nama').setDescription('Nama kamu').setRequired(true))
