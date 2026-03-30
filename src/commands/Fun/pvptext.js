@@ -6,7 +6,7 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("pvptext")
+    .setName("pvptext2")
     .setDescription("Kirim embed bebas (custom text)")
     .addStringOption(option =>
       option.setName('isi')
