@@ -3,39 +3,31 @@ import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 export default {
   data: new SlashCommandBuilder()
     .setName("pvpauto")
-    .setDescription("Auto format PvP log")
-    .addStringOption(option =>
-      option.setName('isi')
-        .setDescription('Contoh: nama=Jay, mode=Training, hasil=Win')
-        .setRequired(true)
-    ),
+    .setDescription("Auto format PvP log (rapi)")
+
+    .addStringOption(o => o.setName('nama').setDescription('Nama kamu').setRequired(true))
+    .addStringOption(o => o.setName('mode').setDescription('Mode').setRequired(true))
+    .addStringOption(o => o.setName('rules').setDescription('Rules').setRequired(false))
+    .addStringOption(o => o.setName('tipe').setDescription('Tipe (1v1)').setRequired(false))
+    .addStringOption(o => o.setName('hasil').setDescription('Win / Lose').setRequired(true))
+    .addUserOption(o => o.setName('lawan').setDescription('Tag lawan').setRequired(true))
+    .addIntegerOption(o => o.setName('win').setDescription('Total kemenangan').setRequired(false))
+    .addIntegerOption(o => o.setName('totem').setDescription('Totem hancur').setRequired(false)),
 
   category: 'Fun',
 
   async execute(interaction) {
     try {
-      const input = interaction.options.getString('isi');
+      const nama = interaction.options.getString('nama');
+      const mode = interaction.options.getString('mode');
+      const rules = interaction.options.getString('rules') || '-';
+      const tipe = interaction.options.getString('tipe') || '1v1';
+      const hasil = interaction.options.getString('hasil');
+      const lawan = interaction.options.getUser('lawan');
+      const win = interaction.options.getInteger('win') ?? '-';
+      const totem = interaction.options.getInteger('totem') ?? '-';
 
-      // parser sederhana
-      const data = {};
-      input.split(',').forEach(pair => {
-        const [key, value] = pair.split('=');
-        if (key && value) {
-          data[key.trim().toLowerCase()] = value.trim();
-        }
-      });
-
-      // ambil data
-      const nama = data.nama || '-';
-      const mode = data.mode || '-';
-      const rules = data.rules || '-';
-      const tipe = data.tipe || '1v1';
-      const hasil = data.hasil || '-';
-      const lawan = data.lawan || '-';
-      const win = data.win || '0';
-      const totem = data.totem || '-';
-
-      // warna auto
+      // warna otomatis
       let color = 0x00AEFF;
       if (hasil.toLowerCase() === 'win') color = 0x00ff00;
       if (hasil.toLowerCase() === 'lose') color = 0xff0000;
