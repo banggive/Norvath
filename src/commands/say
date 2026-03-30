@@ -1,1 +1,23 @@
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
+export default {
+  data: new SlashCommandBuilder()
+    .setName('say')
+    .setDescription('Kirim pesan custom')
+    .addStringOption(option =>
+      option.setName('pesan')
+        .setDescription('Isi pesan')
+        .setRequired(true)
+    ),
+
+  async execute(interaction) {
+    const pesan = interaction.options.getString('pesan');
+
+    const embed = new EmbedBuilder()
+      .setDescription(pesan)
+      .setColor(0x00AEFF);
+
+    await interaction.channel.send({ embeds: [embed] });
+    await interaction.reply({ content: '✅ terkirim', ephemeral: true });
+  }
+};
