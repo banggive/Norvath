@@ -6,34 +6,79 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("embed")
-    .setDescription("Kirim embed custom")
+    .setName("pvpauto")
+    .setDescription("Auto format PvP log")
     .addStringOption(option =>
-      option.setName('text')
-        .setDescription('Isi pesan embed')
+      option.setName('isi')
+        .setDescription('Format: nama=..., mode=..., hasil=...')
         .setRequired(true)
     ),
 
   category: 'Fun',
 
-  async execute(interaction, config, client) {
+  async execute(interaction) {
     try {
-      const text = interaction.options.getString('text');
+      const input = interaction.options.getString('isi');
 
-      const embed = successEmbed("📢 Message", text);
+      // parser sederhana key=value
+      const data = {};
+      input.split(',').forEach(pair => {
+        const [key, value] = pair.split('=');
+        if (key && value) {
+          data[key.trim().toLowerCase()] = value.trim();
+        }
+      });
+
+      // ambil data dengan default
+      const nama = data.nama || '-';
+      const mode = data.mode || '-';
+      const rules = data.rules || '-';
+      const tipe = data.tipe || '1v1';
+      const hasil = data.hasil || '-';
+      const lawan = data.lawan || '-';
+      const win = data.win || '0';
+      const totem = data.totem || '-';
+
+      const text = `
+📌 **Nama:**  
+${nama}
+
+⚔️ **Mode:**  
+${mode}
+
+📜 **Rules:**  
+${rules}
+
+👥 **Tipe:**  
+${tipe}
+
+🔥 **Hasil:**  
+${hasil}
+
+🎯 **Lawan:**  
+${lawan}
+
+🏆 **Total Kemenangan:**  
+${win}
+
+🛡️ **Totem Hancur:**  
+${totem}
+`;
+
+      const embed = successEmbed("pvp logs", text);
 
       await InteractionHelper.safeReply(interaction, {
         embeds: [embed]
       });
 
-      logger.debug(`Embed command used by ${interaction.user.id}`);
+      logger.debug(`pvpauto digunakan oleh ${interaction.user.id}`);
 
     } catch (error) {
-      logger.error('Embed command error:', error);
+      logger.error(error);
 
       await handleInteractionError(interaction, error, {
-        commandName: 'embed',
-        source: 'embed_command'
+        commandName: 'pvpauto',
+        source: 'pvpauto_command'
       });
     }
   },
