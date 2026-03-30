@@ -40,7 +40,7 @@ export default {
       if (hasil.toLowerCase() === 'win') color = 0x00ff00;
       if (hasil.toLowerCase() === 'lose') color = 0xff0000;
 
-            const embed = new EmbedBuilder()
+      const embed = new EmbedBuilder()
         .setTitle('📢 PvP Logs')
         .setDescription(
 `📌 **Nama:**  
@@ -70,10 +70,23 @@ ${totem}`
         .setColor(color)
         .setTimestamp();
 
-      // 🔥 INI BAGIAN BARU
+     // 🔥 INI BAGIAN BARU
       await interaction.deferReply({ ephemeral: true });
       await interaction.deleteReply();
 
       await interaction.channel.send({
         embeds: [embed]
       });
+
+    } catch (err) {
+      console.error(err);
+
+      if (!interaction.replied) {
+        await interaction.reply({
+          content: '❌ error pvpauto',
+          ephemeral: true
+        });
+      }
+    }
+  },
+};
