@@ -1,72 +1,69 @@
-import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("pvpauto")
-    .setDescription("Auto format PvP log")
+    .setName('pvpauto')
+    .setDescription('Auto format PvP log')
+
     .addStringOption(option =>
-      option.setName('isi')
-        .setDescription('Contoh: nama=Jay, mode=Training, Rules= No ely, hasil=Win, lawan= @user, Win=1, totem=3')
+      option.setName('nama')
+        .setDescription('Nama player')
         .setRequired(true)
+    )
+
+    .addStringOption(option =>
+      option.setName('mode')
+        .setDescription('Mode (Training, Ranked, dll)')
+        .setRequired(true)
+        .addChoices(
+          { name: 'Training', value: 'training' },
+          { name: 'Ranked', value: 'ranked' }
+        )
+    )
+
+    .addStringOption(option =>
+      option.setName('rules')
+        .setDescription('Rules')
+        .setRequired(false)
+    )
+
+    .addUserOption(option =>
+      option.setName('lawan')
+        .setDescription('Lawan PvP')
+        .setRequired(true)
+    )
+
+    .addIntegerOption(option =>
+      option.setName('win')
+        .setDescription('Jumlah win')
+        .setRequired(false)
+    )
+
+    .addIntegerOption(option =>
+      option.setName('totem')
+        .setDescription('Jumlah totem')
+        .setRequired(false)
     ),
 
-  category: 'Fun',
-
   async execute(interaction) {
-    try {
-      const input = interaction.options.getString('isi');
 
-      // parser sederhana
-      const data = {};
-      input.split(',').forEach(pair => {
-        const [key, value] = pair.split('=');
-        if (key && value) {
-          data[key.trim().toLowerCase()] = value.trim();
-        }
-      });
+    const nama = interaction.options.getString('nama');
+    const mode = interaction.options.getString('mode');
+    const rules = interaction.options.getString('rules') ?? '-';
+    const lawan = interaction.options.getUser('lawan');
+    const win = interaction.options.getInteger('win') ?? 0;
+    const totem = interaction.options.getInteger('totem') ?? 0;
 
-      // ambil data
-      const nama = data.nama || '-';
-      const mode = data.mode || '-';
-      const rules = data.rules || '-';
-      const tipe = data.tipe || '1v1';
-      const hasil = data.hasil || '-';
-      const lawan = data.lawan || '-';
-      const win = data.win || '0';
-      const totem = data.totem || '-';
-
-      // warna auto
-      let color = 0x00AEFF;
-      if (hasil.toLowerCase() === 'win') color = 0x00ff00;
-      if (hasil.toLowerCase() === 'lose') color = 0xff0000;
-
-      const embed = new EmbedBuilder()
-        .setTitle('📢 PvP Logs')
-        .setDescription(
-`📌 **Nama:**  
-${nama}
-
-⚔️ **Mode:**  
-${mode}
-
-📜 **Rules:**  
-${rules}
-
-👥 **Tipe:**  
-${tipe}
-
-🔥 **Hasil:**  
-${hasil}
-
-🎯 **Lawan:**  
-${lawan}
-
-🏆 **Total Kemenangan:**  
-${win}
-
-🛡️ **Totem Hancur:**  
-${totem}`
-        )
+    await interaction.reply({
+      content: `
+📊 **PvP Log**
+Nama: ${nama}
+Mode: ${mode}
+Rules: ${rules}
+Lawan: ${lawan}
+Win: ${win}
+Totem: ${totem}
+      `
         .setColor(color)
         .setTimestamp();
 
