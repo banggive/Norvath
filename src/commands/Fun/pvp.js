@@ -1,19 +1,34 @@
 import { SlashCommandBuilder } from 'discord.js';
-import { InteractionHelper } from '../../utils/interactionHelper.js';
 
 export default {
   data: new SlashCommandBuilder()
     .setName("pvp")
-    .setDescription("test pvp")
-    .addStringOption(o => o.setName('text').setRequired(true)),
+    .setDescription("Test PvP")
+    .addStringOption(o => 
+      o.setName('text')
+        .setDescription('Isi pesan')
+        .setRequired(true)
+    ),
 
   category: 'Fun',
 
   async execute(interaction) {
-    const text = interaction.options.getString('text');
+    try {
+      const text = interaction.options.getString('text');
 
-    await InteractionHelper.safeReply(interaction, {
-      content: text
-    });
+      await interaction.reply({
+        content: text
+      });
+
+    } catch (err) {
+      console.error(err);
+
+      if (!interaction.replied) {
+        await interaction.reply({
+          content: '❌ error',
+          ephemeral: true
+        });
+      }
+    }
   },
 };
