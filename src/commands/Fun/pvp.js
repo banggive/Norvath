@@ -1,39 +1,56 @@
 import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
+import fs from 'fs';
+
+const DB_PATH = './pvpWins.json';
+
+// load database
+function loadDB() {
+  if (!fs.existsSync(DB_PATH)) return {};
+  return JSON.parse(fs.readFileSync(DB_PATH));
+}
+
+// save database
+function saveDB(data) {
+  fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2));
+}
 
 export default {
   data: new SlashCommandBuilder()
     .setName("pvpauto")
-    .setDescription("Auto format PvP log")
-    .addStringOption(option =>
-      option.setName('isi')
-        .setDescription('Contoh: nama=Jay, mode=Training, hasil=Win')
-        .setRequired(true)
-    ),
+    .setDescription("PvP auto format (advanced)")
+
+    .addStringOption(o => o.setName('nama').setDescription('Nama kamu').setRequired(true))
+    .addStringOption(o => o.setName('mode').setDescription('Mode').setRequired(true))
+    .addStringOption(o => o.setName('rules').setDescription('Rules').setRequired(false))
+    .addStringOption(o => o.setName('tipe').setDescription('Tipe (1v1)').setRequired(false))
+    .addStringOption(o => o.setName('hasil').setDescription('Win / Lose').setRequired(true))
+    .addUserOption(o => o.setName('lawan').setDescription('Tag lawan').setRequired(true))
+    .addIntegerOption(o => o.setName('totem').setDescription('Totem hancur').setRequired(false)),
 
   category: 'Fun',
 
   async execute(interaction) {
     try {
-      const input = interaction.options.getString('isi');
+      const nama = interaction.options.getString('nama');
+      const mode = interaction.options.getString('mode');
+      const rules = interaction.options.getString('rules') || '-';
+      const tipe = interaction.options.getString('tipe') || '1v1';
+      const hasil = interaction.options.getString('hasil');
+      const lawan = interaction.options.getUser('lawan');
+      const totem = interaction.options.getInteger('totem') ?? '-';
 
-      // parser sederhana
-      const data = {};
-      input.split(',').forEach(pair => {
-        const [key, value] = pair.split('=');
-        if (key && value) {
-          data[key.trim().toLowerCase()] = value.trim();
-        }
-      });
+      // === DATABASE ===
+      const db = loadDB();
 
-      // ambil data
-      const nama = data.nama || '-';
-      const mode = data.mode || '-';
-      const rules = data.rules || '-';
-      const tipe = data.tipe || '1v1';
-      const hasil = data.hasil || '-';
-      const lawan = data.lawan || '-';
-      const win = data.win || '0';
-      const totem = data.totem || '-';
+      if (!db[nama]) db[nama] = 0;
+
+      if (hasil.toLowerCase() === 'win') {
+        db[nama] += 1;
+      }
+
+      saveDB(db);
+
+      const totalWin = db[nama];
 
       // warna auto
       let color = 0x00AEFF;
@@ -62,7 +79,7 @@ ${hasil}
 ${lawan}
 
 🏆 **Total Kemenangan:**  
-${win}
+${totalWin}
 
 🛡️ **Totem Hancur:**  
 ${totem}`
@@ -70,9 +87,7 @@ ${totem}`
         .setColor(color)
         .setTimestamp();
 
-      await interaction.reply({
-        embeds: [embed]
-      });
+      await interaction.reply({ embeds: [embed] });
 
     } catch (err) {
       console.error(err);
