@@ -2,7 +2,7 @@ import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("pvp")
+    .setName("pvpnew")
     .setDescription("PvP log lengkap")
 
     .addStringOption(o => o.setName('nama').setDescription('Nama').setRequired(true))
