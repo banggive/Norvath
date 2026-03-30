@@ -5,25 +5,24 @@ export default {
     .setName("pvp")
     .setDescription("PvP log lengkap")
 
-    .addStringOption(o => o.setName('nama').setDescription('Nama kamu').setRequired(true))
+    .addStringOption(o => o.setName('nama').setDescription('Nama').setRequired(true))
     .addStringOption(o => o.setName('mode').setDescription('Mode').setRequired(true))
-    
+
     .addStringOption(o => 
       o.setName('rules')
-        .setDescription('Pilih rules')
+        .setDescription('Rules')
         .addChoices(
           { name: 'Standard', value: 'standard' },
           { name: 'Crystal', value: 'crystal' },
           { name: 'UHC', value: 'uhc' }
         )
-        .setRequired(false)
     )
 
-    .addStringOption(o => o.setName('tipe').setDescription('Tipe (1v1)').setRequired(false))
+    .addStringOption(o => o.setName('tipe').setDescription('Tipe'))
     .addStringOption(o => o.setName('hasil').setDescription('Win / Lose').setRequired(true))
-    .addUserOption(o => o.setName('lawan').setDescription('Tag lawan').setRequired(true))
-    .addIntegerOption(o => o.setName('win').setDescription('Total kemenangan').setRequired(false))
-    .addIntegerOption(o => o.setName('totem').setDescription('Totem hancur').setRequired(false)),
+    .addUserOption(o => o.setName('lawan').setDescription('Lawan').setRequired(true))
+    .addIntegerOption(o => o.setName('win').setDescription('Total kemenangan'))
+    .addIntegerOption(o => o.setName('totem').setDescription('Totem hancur')),
 
   category: 'Fun',
 
@@ -38,7 +37,6 @@ export default {
       const win = interaction.options.getInteger('win') ?? '-';
       const totem = interaction.options.getInteger('totem') ?? '-';
 
-      // 🔥 TEMPLATE RULES
       let rules = '-';
 
       if (rulesInput === 'standard') {
@@ -46,21 +44,16 @@ export default {
 • Potion: Tidak
 • Mace: Tidak
 • Elytra: Tidak`;
-      }
-
-      if (rulesInput === 'crystal') {
+      } else if (rulesInput === 'crystal') {
         rules = `• Crystal: Ya
 • Potion: Tidak
 • Mace: Tidak`;
-      }
-
-      if (rulesInput === 'uhc') {
+      } else if (rulesInput === 'uhc') {
         rules = `• Golden Apple: Ya
 • Potion: Tidak
 • Totem: Tidak`;
       }
 
-      // warna auto
       let color = 0x00AEFF;
       if (hasil.toLowerCase() === 'win') color = 0x00ff00;
       if (hasil.toLowerCase() === 'lose') color = 0xff0000;
@@ -99,13 +92,7 @@ ${totem}`
 
     } catch (err) {
       console.error(err);
-
-      if (!interaction.replied) {
-        await interaction.reply({
-          content: '❌ error pvp',
-          ephemeral: true
-        });
-      }
+      await interaction.reply({ content: '❌ error', ephemeral: true });
     }
   },
 };
