@@ -5,8 +5,12 @@ export default {
     .setName("pvpauto")
     .setDescription("Auto format PvP log")
     .addStringOption(option =>
-      option.setName('isi')
-        .setDescription('Contoh: nama=Jay, mode=Training, Rules= No ely, hasil=Win, lawan= @user, Win=1, totem=3')
+      option.setName('nama')
+        .setDescription('Isi nama kamu')
+      option.setName('mode')
+        .setDescription('Isi mode(sparing/training)')
+      option.setName('rules')
+        .setDescription('Isi rules(no ely, no mace,dll)')
         .setRequired(true)
     ),
 
@@ -15,6 +19,8 @@ export default {
   async execute(interaction) {
     try {
       const input = interaction.options.getString('isi');
+      const input = interaction.options.getString('mode');
+      const input = interaction.options.getString('rules');
 
       // parser sederhana
       const data = {};
