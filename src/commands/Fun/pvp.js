@@ -6,7 +6,7 @@ export default {
     .setDescription("Auto format PvP log")
     .addStringOption(option =>
       option.setName('isi')
-        .setDescription('Contoh: nama=Jay, mode=Training, hasil=Win')
+        .setDescription('Contoh: nama=Jay, mode=Training, Rules= No ely, hasil=Win, lawan= @user, Win=1, totem=3')
         .setRequired(true)
     ),
 
