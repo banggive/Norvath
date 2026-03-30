@@ -6,7 +6,7 @@ import { InteractionHelper } from '../../utils/interactionHelper.js';
 
 export default {
   data: new SlashCommandBuilder()
-    .setName("pvp")
+    .setName("pvp2")
     .setDescription("Buat PvP log embed")
 
     .addStringOption(o => o.setName('nama').setDescription('Nama kamu').setRequired(true))
