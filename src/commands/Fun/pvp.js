@@ -1,9 +1,9 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder } from 'discord.js';
 
 export default {
   data: new SlashCommandBuilder()
     .setName("pvp")
-    .setDescription("Test PvP")
+    .setDescription("Kirim PvP embed")
     .addStringOption(o => 
       o.setName('text')
         .setDescription('Isi pesan')
@@ -16,8 +16,13 @@ export default {
     try {
       const text = interaction.options.getString('text');
 
+      const embed = new EmbedBuilder()
+        .setTitle('📢 PvP Logs')
+        .setDescription(text)
+        .setColor(0x00AEFF);
+
       await interaction.reply({
-        content: text
+        embeds: [embed]
       });
 
     } catch (err) {
@@ -25,7 +30,7 @@ export default {
 
       if (!interaction.replied) {
         await interaction.reply({
-          content: '❌ error',
+          content: '❌ error embed',
           ephemeral: true
         });
       }
